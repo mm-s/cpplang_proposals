@@ -1,0 +1,46 @@
+class hierarchy
+
+A<-B
+
+B needs to be unit tested.
+
+current situation.
+Need to instantiate the complete hierarchical tree, B along with its base class(es)
+problem.
+We cannot isolate B from A.
+We want to replace A by a testing harnees without changing the source code
+
+rebase class B: public A';
+
+example:
+
+struct server {
+	struct handler() {
+		void process(string data)=0;
+	}
+	server() nothrow {
+	}
+	
+};
+
+struct message_processor: server::handler {
+	message_processor() {
+		s=new server(*this);
+	}
+	~message_processor() {
+		delete s;
+	}
+	virtual string process(string data) override {
+		if (data=="handshake") return "welcome";	
+		if (data=="echo") return data;	
+		return "unknown";
+	}
+	server* s{0};
+};
+
+struct current_time: message_processor {
+	virtual string process(string data) override {
+		if (data=="time") return "look your watch";	
+		return "unknown";
+	}
+}
